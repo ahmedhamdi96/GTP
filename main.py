@@ -27,16 +27,22 @@ def get_to_philosophy(url):
             for tag_to_remove in tags_to_remove:
                 tag_to_remove.extract()
         #get the p tags 
-        paragraph = content.find('p', {"class": ""})
-        #extract all links in the first paragraph
-        all_links_tags = paragraph.find_all('a')
-        #get the first Wikipedia link
-        first_link = ''
-        for link_tag in all_links_tags:
-            link = link_tag.get('href')
-            if link != None and bool(re.match(r'^/wiki/*', link)):
-                first_link = link
+        paragraphs = content.find_all('p', {"class": ""})
+        for paragraph in paragraphs:
+            #extract all links in a paragraph
+            all_links_tags = paragraph.find_all('a')
+            #get the first Wikipedia link
+            first_link = ''
+            for link_tag in all_links_tags:
+                link = link_tag.get('href')
+                if link != None and bool(re.match(r'^/wiki/*', link)):
+                    first_link = link
+                    break
+            if first_link != '':
                 break
+
+        if first_link == '':
+            print("No Wikipedia links in this page!")
 
         url = 'http://en.wikipedia.org' + first_link
         counter += 1
